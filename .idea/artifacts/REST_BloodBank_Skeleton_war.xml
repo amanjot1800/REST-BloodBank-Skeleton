@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="REST-BloodBank-Skeleton:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>REST-BloodBank-Skeleton</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="REST-BloodBank-Skeleton-1.war">
+      <element id="artifact" artifact-name="REST-BloodBank-Skeleton:war exploded" />
+    </root>
+  </artifact>
+</component>
