@@ -13,6 +13,7 @@ package bloodbank.entity;
 import static bloodbank.entity.SecurityRole.ROLE_BY_NAME_QUERY;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Access;

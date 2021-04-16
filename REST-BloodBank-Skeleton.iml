@@ -28,7 +28,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
-          <factory-entry name="bloodbank-PU" value="1342737a-aa47-4817-a576-c20e36841fe9" />
+          <factory-entry name="bloodbank-PU" value="7e0774c8-793b-4c13-9125-c1142934d4de" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

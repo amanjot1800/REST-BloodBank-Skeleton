@@ -42,6 +42,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import javax.transaction.Transactional;
 
@@ -65,31 +66,35 @@ public class BloodBankService implements Serializable {
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
 
-    public List<Person> getAllPeople() {
+    public <T> List<T> getAll(Class<T> clazz) {
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Person> query = builder.createQuery(Person.class);
-        Root<Person> root = query.from(Person.class);
+        CriteriaQuery<T> query = builder.createQuery(clazz);
+        Root<T> root = query.from( clazz);
         query.select(root);
-        TypedQuery<Person> tq = em.createQuery(query);
+        TypedQuery<T> tq = em.createQuery(query);
         return tq.getResultList();
     }
 
-    public Person getPersonId(int id) {
+    public <T, R> T getWithId(Class< T> clazz, SingularAttribute<? super T, R> sa, R id) {
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Person> query = builder.createQuery(Person.class);
-        Root<Person> root = query.from(Person.class);
+        CriteriaQuery<T> query = builder.createQuery(clazz);
+        Root<T> root = query.from(clazz);
         query.select(root);
-        query.where(builder.equal(root.get(Person_.id), builder.parameter(Integer.class, "id")));
-        TypedQuery<Person> tq = em.createQuery( query);
+        query.where(builder.equal(root.get(sa), builder.parameter(Integer.class, "id")));
+        TypedQuery<T> tq = em.createQuery( query);
         tq.setParameter( "id", id);
         return tq.getSingleResult();
+
     }
+
 
     @Transactional
     public Person persistPerson(Person newPerson) {
         if (newPerson != null){
             em.persist(newPerson);
-            return getPersonId(newPerson.getId());
+            return getWithId(Person.class, Person_.id, newPerson.getId());
         }
         return null;
     }
@@ -117,7 +122,10 @@ public class BloodBankService implements Serializable {
 
     @Transactional
     public Person setAddressFor(int id, Address newAddress) {
-    	return null;
+//        Contact contact = getContactWithID(id);
+//        contact.setAddress(newAddress);
+//        em.merge(contact);
+        return null;
     }
 
     /**
@@ -129,7 +137,7 @@ public class BloodBankService implements Serializable {
      */
     @Transactional
     public Person updatePersonById(int id, Person personWithUpdates) {
-        Person personToBeUpdated = getPersonId(id);
+        Person personToBeUpdated = getWithId(Person.class, Person_.id, id);
         if (personToBeUpdated != null) {
             em.refresh(personToBeUpdated);
             em.merge(personWithUpdates);
@@ -145,7 +153,7 @@ public class BloodBankService implements Serializable {
      */
     @Transactional
     public void deletePersonById(int id) {
-        Person person = getPersonId(id);
+        Person person = getWithId(Person.class, Person_.id, id);
         if (person != null) {
             em.refresh(person);
             TypedQuery<SecurityUser> findUser = em
@@ -157,3 +165,20 @@ public class BloodBankService implements Serializable {
         }
     }
 }
+
+
+
+/*
+*     public <T, R> T getWithId(Class< T> clazz, Class< R> classPK, SingularAttribute<? super T, R> sa, R id) {
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(clazz);
+        Root<T> root = query.from(clazz);
+        query.select(root);
+        query.where(builder.equal(root.get(sa), builder.parameter(classPK, "id")));
+        TypedQuery<T> tq = em.createQuery( query);
+        tq.setParameter( "id", id);
+        return tq.getSingleResult();
+
+    }
+* */

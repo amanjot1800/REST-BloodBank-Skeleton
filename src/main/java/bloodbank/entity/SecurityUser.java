@@ -15,6 +15,7 @@ import static bloodbank.entity.SecurityUser.USER_FOR_OWNING_PERSON_QUERY;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -49,8 +50,8 @@ import bloodbank.rest.serializer.SecurityRoleSerializer;
 @Access(AccessType.FIELD)
 @Table(name = "security_user")
 @NamedQueries({
-    @NamedQuery(name = USER_FOR_OWNING_PERSON_QUERY, query = "SELECT u FROM SecurityUser u WHERE u.person.id = :param1"),
-    @NamedQuery(name = SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u WHERE u.username = :param1")})
+    @NamedQuery(name = USER_FOR_OWNING_PERSON_QUERY, query = "SELECT u FROM SecurityUser u left join FETCH u.roles WHERE u.person.id = :param1"),
+    @NamedQuery(name = SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u left join fetch u.roles WHERE u.username = :param1")})
 public class SecurityUser implements Serializable, Principal {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;

@@ -23,86 +23,86 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table( name = "person")
-@NamedQuery( name = Person.ALL_PERSONS_QUERY_NAME, query = "SELECT p FROM Person p")
+@NamedQuery( name = Person.ALL_PERSONS_QUERY_NAME, query = "SELECT p FROM Person p left JOIN FETCH p.donations")
 //@AttributeOverride( name = "id", column = @Column( name = "id"))
 //no need for AttributeOverride as person is column is called id as well.
 public class Person extends PojoBase implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	public static final String ALL_PERSONS_QUERY_NAME = "Person.findAll";
+    private static final long serialVersionUID = 1L;
 
-	@Basic( optional = false)
-	@Column( name = "first_name", nullable = false, length = 50)
-	private String firstName;
+    public static final String ALL_PERSONS_QUERY_NAME = "Person.findAll";
 
-	@Basic( optional = false)
-	@Column( name = "last_name", nullable = false, length = 50)
-	private String lastName;
+    @Basic( optional = false)
+    @Column( name = "first_name", nullable = false, length = 50)
+    private String firstName;
 
-	@OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "owner", fetch = FetchType.LAZY)
+    @Basic( optional = false)
+    @Column( name = "last_name", nullable = false, length = 50)
+    private String lastName;
+
+    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "owner", fetch = FetchType.LAZY)
 //	@JoinColumn( name = "person_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Set< DonationRecord> donations = new HashSet<>();
+    private Set< DonationRecord> donations = new HashSet<>();
 
-	@OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "owner", fetch = FetchType.LAZY)
 //	@JoinColumn( name = "person_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Set< Contact> contacts = new HashSet<>();
+    private Set< Contact> contacts = new HashSet<>();
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName( String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName( String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName( String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName( String lastName) {
+        this.lastName = lastName;
+    }
 
-	@JsonIgnore
-	public Set< DonationRecord> getDonations() {
-		return donations;
-	}
+    @JsonIgnore
+    public Set< DonationRecord> getDonations() {
+        return donations;
+    }
 
-	public void setDonations( Set< DonationRecord> donations) {
-		this.donations = donations;
-	}
+    public void setDonations( Set< DonationRecord> donations) {
+        this.donations = donations;
+    }
 
-	@JsonIgnore
-	public Set< Contact> getContacts() {
-		return contacts;
-	}
+    @JsonIgnore
+    public Set< Contact> getContacts() {
+        return contacts;
+    }
 
-	public void setContacts( Set< Contact> contacts) {
-		this.contacts = contacts;
-	}
+    public void setContacts( Set< Contact> contacts) {
+        this.contacts = contacts;
+    }
 
-	public void setFullName( String firstName, String lastName) {
-		setFirstName( firstName);
-		setLastName( lastName);
-	}
+    public void setFullName( String firstName, String lastName) {
+        setFirstName( firstName);
+        setLastName( lastName);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		return prime + Objects.hash( getFirstName(), getLastName());
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        return prime + Objects.hash( getFirstName(), getLastName());
+    }
 
-	@Override
-	public boolean equals( Object obj) {
-		if ( obj == null)
-			return false;
-		if ( this == obj)
-			return true;
-		if ( !( getClass() == obj.getClass() || Hibernate.getClass( obj) == getClass()))
-			return false;
-		Person other = (Person) obj;
-		return Objects.equals( getFirstName(), other.getFirstName())
-				&& Objects.equals( getLastName(), other.getLastName());
-	}
+    @Override
+    public boolean equals( Object obj) {
+        if ( obj == null)
+            return false;
+        if ( this == obj)
+            return true;
+        if ( !( getClass() == obj.getClass() || Hibernate.getClass( obj) == getClass()))
+            return false;
+        Person other = (Person) obj;
+        return Objects.equals( getFirstName(), other.getFirstName())
+                && Objects.equals( getLastName(), other.getLastName());
+    }
 
 }
