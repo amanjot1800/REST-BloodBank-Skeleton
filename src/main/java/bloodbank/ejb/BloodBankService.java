@@ -45,16 +45,10 @@ import javax.persistence.criteria.Root;
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import javax.transaction.Transactional;
 
+import bloodbank.entity.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
-
-import bloodbank.entity.Address;
-import bloodbank.entity.BloodBank;
-import bloodbank.entity.BloodDonation;
-import bloodbank.entity.Person;
-import bloodbank.entity.SecurityRole;
-import bloodbank.entity.SecurityUser;
 
 
 /**
@@ -72,16 +66,32 @@ public class BloodBankService implements Serializable {
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
 
     public List<Person> getAllPeople() {
-    	return null;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Person> query = builder.createQuery(Person.class);
+        Root<Person> root = query.from(Person.class);
+        query.select(root);
+        TypedQuery<Person> tq = em.createQuery(query);
+        return tq.getResultList();
     }
 
     public Person getPersonId(int id) {
-    	return null;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Person> query = builder.createQuery(Person.class);
+        Root<Person> root = query.from(Person.class);
+        query.select(root);
+        query.where(builder.equal(root.get(Person_.id), builder.parameter(Integer.class, "id")));
+        TypedQuery<Person> tq = em.createQuery( query);
+        tq.setParameter( "id", id);
+        return tq.getSingleResult();
     }
 
     @Transactional
     public Person persistPerson(Person newPerson) {
-    	return null;
+        if (newPerson != null){
+            em.persist(newPerson);
+            return getPersonId(newPerson.getId());
+        }
+        return null;
     }
 
     @Transactional
