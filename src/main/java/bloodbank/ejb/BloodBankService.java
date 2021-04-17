@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Singleton;
+import javax.faces.view.facelets.Facelet;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -97,6 +98,17 @@ public class BloodBankService implements Serializable {
             return getWithId(BloodBank.class, BloodBank_.id, newBank.getId());
         }
         return null;
+    }
+
+    @Transactional
+    public Boolean isDuplicated(BloodBank bank){
+        List<BloodBank> allBanks = getAll(BloodBank.class);
+        for (BloodBank bank1: allBanks) {
+                if (bank1.getName().equals(bank.getName())){
+                    return true;
+                }
+        }
+        return false;
     }
 
     @Transactional
@@ -181,6 +193,15 @@ public class BloodBankService implements Serializable {
             em.refresh(bank);
             em.remove(bank);
         }
+    }
+
+    @Transactional
+    public BloodBank updateBloodBank(int bbID, BloodBank newBloodBank) {
+        BloodBank banktobeupdated = getWithId(BloodBank.class, BloodBank_.id, bbID);
+        em.refresh(banktobeupdated);
+        em.merge(newBloodBank);
+        em.flush();
+        return getWithId(BloodBank.class, BloodBank_.id, bbID);
     }
 }
 
