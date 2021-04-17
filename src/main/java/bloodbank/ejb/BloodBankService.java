@@ -63,6 +63,7 @@ public class BloodBankService implements Serializable {
     
     @PersistenceContext(name = PU_NAME)
     protected EntityManager em;
+
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
 
@@ -70,7 +71,7 @@ public class BloodBankService implements Serializable {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(clazz);
-        Root<T> root = query.from( clazz);
+        Root<T> root = query.from(clazz);
         query.select(root);
         TypedQuery<T> tq = em.createQuery(query);
         return tq.getResultList();
@@ -89,6 +90,14 @@ public class BloodBankService implements Serializable {
 
     }
 
+    @Transactional
+    public BloodBank persistBloodBank(BloodBank newBank) {
+        if (newBank != null){
+            em.persist(newBank);
+            return getWithId(BloodBank.class, BloodBank_.id, newBank.getId());
+        }
+        return null;
+    }
 
     @Transactional
     public Person persistPerson(Person newPerson) {
@@ -162,6 +171,15 @@ public class BloodBankService implements Serializable {
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(person);
+        }
+    }
+
+    @Transactional
+    public void deleteBankById(int id) {
+        BloodBank bank = getWithId(BloodBank.class, BloodBank_.id, id);
+        if (bank != null) {
+            em.refresh(bank);
+            em.remove(bank);
         }
     }
 }
