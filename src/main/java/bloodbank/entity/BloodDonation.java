@@ -23,10 +23,14 @@ import org.hibernate.Hibernate;
  */
 @Entity
 @Table( name = "blood_donation")
-@NamedQuery( name = "BloodDonation.findAll", query = "SELECT b FROM BloodDonation b")
+@NamedQuery( name = "BloodDonation.findAll", query = "SELECT b FROM BloodDonation b left join fetch b.bank")
+@NamedQuery( name = "BloodDonation.findOne", query = "SELECT b FROM BloodDonation b left join fetch b.bank where b.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "donation_id"))
 public class BloodDonation extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public static final String FIND_ALL_BLOODDONATION_QUERY = "BloodDonation.findAll";
+	public static final String FIND_ONE_BLOODDONATION_QUERY = "BloodDonation.findOne";
 
 	@ManyToOne( optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn( name = "bank_id", referencedColumnName = "bank_id")

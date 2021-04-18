@@ -10,6 +10,9 @@
  */
 package bloodbank.ejb;
 
+
+import static bloodbank.entity.BloodDonation.FIND_ALL_BLOODDONATION_QUERY;
+import static bloodbank.entity.BloodDonation.FIND_ONE_BLOODDONATION_QUERY;
 import static bloodbank.entity.BloodBank.ALL_BLOODBANKS_QUERY_NAME;
 import static bloodbank.entity.Person.ALL_PERSONS_QUERY_NAME;
 import static bloodbank.entity.SecurityRole.ROLE_BY_NAME_QUERY;
@@ -29,10 +32,7 @@ import static bloodbank.utility.MyConstants.PU_NAME;
 import static bloodbank.utility.MyConstants.USER_ROLE;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ejb.Singleton;
 import javax.faces.view.facelets.Facelet;
@@ -76,6 +76,18 @@ public class BloodBankService implements Serializable {
         query.select(root);
         TypedQuery<T> tq = em.createQuery(query);
         return tq.getResultList();
+    }
+
+    public List<BloodDonation> getallBlooddonations() {
+        TypedQuery<BloodDonation> findAll = em.createNamedQuery(FIND_ALL_BLOODDONATION_QUERY, BloodDonation.class);
+        return findAll.getResultList();
+    }
+
+    public BloodDonation getDonationWithId(int id) {
+        TypedQuery<BloodDonation> findAll = em.
+                createNamedQuery(FIND_ONE_BLOODDONATION_QUERY, BloodDonation.class)
+                .setParameter("param1", id);
+        return findAll.getSingleResult();
     }
 
     public <T, R> T getWithId(Class< T> clazz, SingularAttribute<? super T, R> sa, R id) {
@@ -203,6 +215,16 @@ public class BloodBankService implements Serializable {
         em.flush();
         return getWithId(BloodBank.class, BloodBank_.id, bbID);
     }
+
+    public BloodDonation persistBloodDonation(BloodDonation bloodDonation) {
+        if (bloodDonation != null){
+            em.persist(bloodDonation);
+            return getWithId(BloodDonation.class, BloodDonation_.id, bloodDonation.getId());
+        }
+        return null;
+    }
+
+
 }
 
 
