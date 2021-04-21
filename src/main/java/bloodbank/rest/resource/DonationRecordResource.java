@@ -31,7 +31,7 @@ public class DonationRecordResource {
 
     @GET
     @RolesAllowed({ADMIN_ROLE})
-    public Response getDonations() {
+    public Response getDonationRecords() {
         LOG.debug( "retrieving all DonationRecords ...");
         List<DonationRecord> donationRecords = service.getAll(DonationRecord.class);
         return Response.ok(donationRecords).build();
@@ -40,7 +40,7 @@ public class DonationRecordResource {
     @GET
     @RolesAllowed( { ADMIN_ROLE })
     @Path( RESOURCE_PATH_ID_PATH)
-    public Response getDonationById( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id) {
+    public Response getDonationRecordById( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug( "try to retrieve specific Donation Record " + id);
         DonationRecord donationRecord = service.getDonationRecordWithId(id);
         return Response.ok(donationRecord).build();
@@ -48,24 +48,11 @@ public class DonationRecordResource {
 
     @POST
     @RolesAllowed( { ADMIN_ROLE })
-    public Response addBloodDonation(BloodDonation bloodDonation) {
+    public Response addDonationRecord(DonationRecord donationRecord) {
         LOG.debug( "add a new donation ...");
-        BloodDonation bloodDonation1 = service.persistBloodDonation(bloodDonation);
-        return Response.ok(bloodDonation1).build();
+        DonationRecord donationRecord1 = service.persistDonationRecord(donationRecord);
+        return Response.ok(donationRecord1).build();
 
-    }
-
-    @RolesAllowed( { ADMIN_ROLE })
-    @POST
-    @Path("/{id}/blooddonation")
-    public Response addBloodDonationToBloodBank( @PathParam("id") int bbID, BloodDonation newBloodDonation) {
-        LOG.debug( "add a new BloodDonation to bloodbank={} ...", bbID);
-
-        BloodBank bb = service.getWithId(BloodBank.class, BloodBank_.id, bbID);
-        newBloodDonation.setBank(bb);
-        bb.getDonations().add(newBloodDonation);
-        bb = service.updateBloodBank(bbID, bb);
-        return Response.ok( bb).build();
     }
 
 
@@ -73,10 +60,11 @@ public class DonationRecordResource {
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path("/{id}")
-    public Response deleteBank(@PathParam("id") int id){
+    public Response deleteDonationRecord(@PathParam("id") int id){
         Response response = null;
-        BloodBank bank = service.getWithId(BloodBank.class, Person_.id, id);
-        service.deleteBankById(id);
-        return Response.ok(bank).build();
+
+        DonationRecord donationRecord = service.getWithId(DonationRecord.class, DonationRecord_.id, id);
+        service.deleteDonationRecordById(id);
+        return Response.ok(donationRecord).build();
     }
 }

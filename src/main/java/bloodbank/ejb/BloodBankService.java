@@ -252,22 +252,37 @@ public class BloodBankService implements Serializable {
         return null;
     }
 
+    public DonationRecord persistDonationRecord(DonationRecord donationRecord){
+        if (donationRecord != null){
+            em.persist(donationRecord);
+            return getWithId(DonationRecord.class, DonationRecord_.id, donationRecord.getId());
+        }
+        return null;
+    }
+
+    public void deleteDonationRecordById(int id){
+        DonationRecord donationRecord = getWithId(DonationRecord.class, DonationRecord_.id, id);
+        if (donationRecord != null) {
+            em.refresh(donationRecord);
+            em.remove(donationRecord);
+        }
+    }
+
+    public Phone persistPhone(Phone phone){
+        if (phone!=null){
+            em.persist(phone);
+            return getWithId(Phone.class, Phone_.id, phone.getId());
+        }
+        return null;
+    }
+
+    public void deletePhoneById(int id){
+        Phone phone = getWithId(Phone.class, Phone_.id, id);
+        if (phone != null) {
+            em.refresh(phone);
+            em.remove(phone);
+        }
+    }
+
 
 }
-
-
-
-/*
-*     public <T, R> T getWithId(Class< T> clazz, Class< R> classPK, SingularAttribute<? super T, R> sa, R id) {
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(clazz);
-        Root<T> root = query.from(clazz);
-        query.select(root);
-        query.where(builder.equal(root.get(sa), builder.parameter(classPK, "id")));
-        TypedQuery<T> tq = em.createQuery( query);
-        tq.setParameter( "id", id);
-        return tq.getSingleResult();
-
-    }
-* */
