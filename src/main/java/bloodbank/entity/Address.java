@@ -20,30 +20,16 @@ import org.hibernate.Hibernate;
 /**
  * The persistent class for the address database table.
  */
-//Hint - @Entity marks this class as an entity which needs to be mapped by JPA.
-//Hint - @Entity does not need a name if the name of the class is sufficient.
-//Hint - @Entity name does not matter as long as it is consistent across the code.
+
 @Entity
-//Hint - @Table defines a specific table on DB which is mapped to this entity.
 @Table( name = "address")
-//Hint - @NamedQuery attached to this class which uses JPQL/HQL. SQL cannot be used with NamedQuery.
-//Hint - @NamedQuery uses the name which is defined in @Entity for JPQL, if no name is defined use class name.
-//Hint - @NamedNativeQuery can optionally be used if there is a need for SQL query.
 @NamedQuery( name = "Address.findAll", query = "SELECT a FROM Address a")
-//Hint - @AttributeOverride can overrides column details. This Entity uses address_id as its primary key name, it needs to override the name in the mapped super class.
+@NamedQuery( name = "Address.findwithid", query = "SELECT a FROM Address a where a.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "address_id"))
-//Hint - PojoBase is inherited by any entity with integer as their primary key.
-//Hint - PojoBaseCompositeKey is inherited by any entity with a composite key as their primary key.
 public class Address extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	// Hint - @Basic( optional = false) is used when the object cannot be null.
-	// Hint - @Basic or none can be used if the object can be null.
-	// Hint - @Basic is for checking the state of object at the scope of our code.
 	@Basic( optional = false)
-	// Hint - @Column is used to define the details of the column which this object will map to.
-	// Hint - @Column is for mapping and creation (if needed) of an Object to DB.
-	// Hint - @Column can also be used to define a specific name for the column if it is different than our object name.
 	@Column( name = "street_number", nullable = false, length = 10)
 	private String streetNumber;
 

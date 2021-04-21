@@ -90,6 +90,21 @@ public class BloodBankService implements Serializable {
         return findAll.getSingleResult();
     }
 
+    public Address getAddressWithId(int id) {
+        TypedQuery<Address> findAddress = em.
+                createNamedQuery("Address.findwithid", Address.class)
+                .setParameter("param1", id);
+        return findAddress.getSingleResult();
+    }
+
+    public Address persistAddress(Address address){
+        if( address !=null){
+            em.persist(address);
+            return getWithId(Address.class, Address_.id, address.getId());
+        }
+        return null;
+    }
+
     public <T, R> T getWithId(Class< T> clazz, SingularAttribute<? super T, R> sa, R id) {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -204,6 +219,15 @@ public class BloodBankService implements Serializable {
         if (bank != null) {
             em.refresh(bank);
             em.remove(bank);
+        }
+    }
+
+    @Transactional
+    public void deleteAddress(int id){
+        Address address = getWithId(Address.class, Address_.id, id);
+        if (address != null) {
+            em.refresh(address);
+            em.remove(address);
         }
     }
 

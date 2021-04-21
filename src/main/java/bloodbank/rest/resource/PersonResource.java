@@ -93,15 +93,6 @@ public class PersonResource {
 		return response;
 	}
 
-	@PUT
-	@RolesAllowed( { ADMIN_ROLE })
-	@Path( CUSTOMER_ADDRESS_RESOURCE_PATH)
-	public Response addAddressForPerson( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, Address newAddress) {
-		Response response = null;
-		Person updatedPerson = service.setAddressFor( id, newAddress);
-		response = Response.ok( updatedPerson).build();
-		return response;
-	}
 
 	@DELETE
 	@RolesAllowed({ADMIN_ROLE})
