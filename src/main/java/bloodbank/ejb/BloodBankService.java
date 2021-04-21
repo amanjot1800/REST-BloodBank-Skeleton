@@ -90,6 +90,10 @@ public class BloodBankService implements Serializable {
         return findAll.getSingleResult();
     }
 
+    public DonationRecord getDonationRecordWithId(int id){
+        return getWithId(DonationRecord.class, DonationRecord_.id, id);
+    }
+
     public Address getAddressWithId(int id) {
         TypedQuery<Address> findAddress = em.
                 createNamedQuery("Address.findwithid", Address.class)

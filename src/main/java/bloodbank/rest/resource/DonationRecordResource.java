@@ -1,10 +1,7 @@
 package bloodbank.rest.resource;
 
 import bloodbank.ejb.BloodBankService;
-import bloodbank.entity.BloodBank;
-import bloodbank.entity.BloodBank_;
-import bloodbank.entity.BloodDonation;
-import bloodbank.entity.Person_;
+import bloodbank.entity.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,18 +32,18 @@ public class DonationRecordResource {
     @GET
     @RolesAllowed({ADMIN_ROLE})
     public Response getDonations() {
-        LOG.debug( "retrieving all Donations ...");
-        List<BloodDonation> donations = service.getallBlooddonations();
-        return Response.ok(donations).build();
+        LOG.debug( "retrieving all DonationRecords ...");
+        List<DonationRecord> donationRecords = service.getAll(DonationRecord.class);
+        return Response.ok(donationRecords).build();
     }
 
     @GET
     @RolesAllowed( { ADMIN_ROLE })
     @Path( RESOURCE_PATH_ID_PATH)
     public Response getDonationById( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id) {
-        LOG.debug( "try to retrieve specific Blood Donation " + id);
-        BloodDonation donation = service.getDonationWithId(id);
-        return Response.ok(donation).build();
+        LOG.debug( "try to retrieve specific Donation Record " + id);
+        DonationRecord donationRecord = service.getDonationRecordWithId(id);
+        return Response.ok(donationRecord).build();
     }
 
     @POST
