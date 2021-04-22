@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 
 /**
@@ -22,12 +23,11 @@ import org.hibernate.Hibernate;
  */
 @Entity
 @Table( name = "donation_record")
-@NamedQuery( name = DonationRecord.ALL_RECORDS_QUERY_NAME, query = "SELECT d FROM DonationRecord d")
+@NamedQuery( name = "DonationRecord.findAll", query = "SELECT d FROM DonationRecord d left join fetch d.donation left join fetch d.owner")
+@NamedQuery( name = "DonationRecord.findById", query = "SELECT d FROM DonationRecord d left join fetch d.donation left join fetch d.owner where d.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "record_id"))
 public class DonationRecord extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	public static final String ALL_RECORDS_QUERY_NAME = "DonationRecord.findAll";
 
 	@OneToOne( fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn( name = "donation_id", referencedColumnName = "donation_id")
@@ -43,6 +43,7 @@ public class DonationRecord extends PojoBase implements Serializable {
 
 	}
 
+	@JsonIgnore
 	public BloodDonation getDonation() {
 		return donation;
 	}
@@ -51,6 +52,7 @@ public class DonationRecord extends PojoBase implements Serializable {
 		this.donation = donation;
 	}
 
+	@JsonIgnore
 	public Person getOwner() {
 		return owner;
 	}

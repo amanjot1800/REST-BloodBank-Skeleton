@@ -43,8 +43,9 @@ INSERT INTO `contact` VALUES (1,1,'Home','test@test.com',1,1617265125540,1617265
 -- Dumping data for table `donation_record`
 --
 
-INSERT INTO `donation_record` VALUES (1,1,2,_binary '',1617265125572,1617265125572,0),(2,1,2,_binary '\0',1617265125576,1617265125576,0),(3,1,1,_binary '',1617265125577,1617265125577,0);
-
+INSERT INTO `donation_record`
+VALUES (1, 1, 2, _binary '\0', 1617265125572, 1617265125572, 0),
+       (2, 1, 1, _binary '\0', 1617265125577, 1617265125577, 0);
 --
 -- Dumping data for table `role`
 --

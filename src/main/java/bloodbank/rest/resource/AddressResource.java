@@ -61,7 +61,7 @@ public class AddressResource {
     @PUT
     @Path( "/{id}")
     public Response updateAddress( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, Address updatingAddress) {
-        LOG.debug( "update a specific BloodBank ...");
+        LOG.debug( "update a specific address ...");
         Response response = null;
         Address updatedAddress = service.updateAddress(id, updatingAddress);
         return Response.ok(updatedAddress).build();

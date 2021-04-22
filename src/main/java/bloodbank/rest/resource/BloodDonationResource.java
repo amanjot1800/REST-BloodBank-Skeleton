@@ -56,7 +56,7 @@ public class BloodDonationResource {
     }
 
 
-/*    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
+    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
     @PUT
     @Path( "/{id}")
     public Response updateBloodDonation( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, BloodDonation updatingBloodDonation) {
@@ -64,7 +64,7 @@ public class BloodDonationResource {
         Response response = null;
         BloodDonation updatedBloodBank = service.updateBloodDonation(id, updatingBloodDonation);
         return Response.ok(updatedBloodBank).build();
-    }*/
+    }
 
 
     @DELETE

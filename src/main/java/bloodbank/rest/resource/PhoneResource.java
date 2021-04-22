@@ -34,7 +34,7 @@ public class PhoneResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response getPhones() {
         LOG.debug( "retrieving all phones ...");
-        List<Phone> phones = service.getAll(Phone.class);
+        List<Phone> phones = service.getAllPhones();
         Response response = Response.ok( phones).build();
         return response;
     }
@@ -44,7 +44,7 @@ public class PhoneResource {
     @Path( RESOURCE_PATH_ID_PATH)
     public Response getPhoneById( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug( "try to retrieve specific phone " + id);
-        Phone phone = service.getWithId(Phone.class, Phone_.id, id);
+        Phone phone = service.getPhoneWithId(id);
         return Response.ok(phone).build();
     }
 
@@ -57,14 +57,21 @@ public class PhoneResource {
 
     }
 
-
+    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
+    @PUT
+    @Path( "/{id}")
+    public Response updatePhone( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, Phone updatingPhone) {
+        LOG.debug( "update a specific phone ...");
+        Response response = null;
+        Phone updatedPhone = service.updatePhone(id, updatingPhone);
+        return Response.ok(updatedPhone).build();
+    }
 
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path("/{id}")
     public Response deletePhone(@PathParam("id") int id){
         Response response = null;
-
         Phone phone = service.getWithId(Phone.class, Phone_.id, id);
         service.deletePhoneById(id);
         return Response.ok(phone).build();

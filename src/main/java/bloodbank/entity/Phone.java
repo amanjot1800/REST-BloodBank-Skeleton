@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 
 /**
@@ -22,7 +23,8 @@ import org.hibernate.Hibernate;
  */
 @Entity
 @Table( name = "phone")
-@NamedQuery( name = "Phone.findAll", query = "SELECT p FROM Phone p")
+@NamedQuery( name = "Phone.findAll", query = "SELECT p FROM Phone p left join fetch p.contacts")
+@NamedQuery( name = "Phone.findById", query = "SELECT p FROM Phone p left join fetch p.contacts where p.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "phone_id"))
 public class Phone extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -75,6 +77,7 @@ public class Phone extends PojoBase implements Serializable {
 		this.number = number;
 	}
 
+	@JsonIgnore
 	public Set< Contact> getContacts() {
 		return contacts;
 	}

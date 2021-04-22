@@ -33,7 +33,7 @@ public class DonationRecordResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response getDonationRecords() {
         LOG.debug( "retrieving all DonationRecords ...");
-        List<DonationRecord> donationRecords = service.getAll(DonationRecord.class);
+        List<DonationRecord> donationRecords = service.getAllDonationRecords();
         return Response.ok(donationRecords).build();
     }
 
@@ -52,10 +52,7 @@ public class DonationRecordResource {
         LOG.debug( "add a new donation ...");
         DonationRecord donationRecord1 = service.persistDonationRecord(donationRecord);
         return Response.ok(donationRecord1).build();
-
     }
-
-
 
     @DELETE
     @RolesAllowed({ADMIN_ROLE})

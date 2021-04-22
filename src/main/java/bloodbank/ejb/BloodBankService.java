@@ -82,7 +82,6 @@ public class BloodBankService implements Serializable {
     }
 
 
-
     public List<BloodDonation> getallBlooddonations() {
         TypedQuery<BloodDonation> findAll = em.createNamedQuery(FIND_ALL_BLOODDONATION_QUERY, BloodDonation.class);
         return findAll.getResultList();
@@ -93,32 +92,14 @@ public class BloodBankService implements Serializable {
         return findAll.getResultList();
     }
 
-
-    public BloodDonation getDonationWithId(int id) {
-        TypedQuery<BloodDonation> findAll = em.
-                createNamedQuery(FIND_ONE_BLOODDONATION_QUERY, BloodDonation.class)
-                .setParameter("param1", id);
-        return findAll.getSingleResult();
+    public List<Phone> getAllPhones() {
+        TypedQuery<Phone> findAll = em.createNamedQuery("Phone.findAll", Phone.class);
+        return findAll.getResultList();
     }
 
-    public DonationRecord getDonationRecordWithId(int id){
-        return getWithId(DonationRecord.class, DonationRecord_.id, id);
-    }
-
-    public Address getAddressWithId(int id) {
-        TypedQuery<Address> findAddress = em.
-                createNamedQuery(FIND_ADDRESS_ID_QUERY, Address.class)
-                .setParameter("param1", id);
-        return findAddress.getSingleResult();
-    }
-
-    @Transactional
-    public Address persistAddress(Address address){
-        if( address !=null){
-            em.persist(address);
-            return getAddressWithId(address.getId());
-        }
-        return null;
+    public List<DonationRecord> getAllDonationRecords() {
+        TypedQuery<DonationRecord> findAll = em.createNamedQuery("DonationRecord.findAll", DonationRecord.class);
+        return findAll.getResultList();
     }
 
     public <T, R> T getWithId(Class< T> clazz, SingularAttribute<? super T, R> sa, R id) {
@@ -133,6 +114,44 @@ public class BloodBankService implements Serializable {
         return tq.getSingleResult();
 
     }
+
+    public BloodDonation getDonationWithId(int id) {
+        TypedQuery<BloodDonation> findAll = em.
+                createNamedQuery(FIND_ONE_BLOODDONATION_QUERY, BloodDonation.class)
+                .setParameter("param1", id);
+        return findAll.getSingleResult();
+    }
+
+    public DonationRecord getDonationRecordWithId(int id) {
+        TypedQuery<DonationRecord> findDonationRecord = em.
+                createNamedQuery("DonationRecord.findById", DonationRecord.class)
+                .setParameter("param1", id);
+        return findDonationRecord.getSingleResult();
+    }
+
+    public Address getAddressWithId(int id) {
+        TypedQuery<Address> findAddress = em.
+                createNamedQuery(FIND_ADDRESS_ID_QUERY, Address.class)
+                .setParameter("param1", id);
+        return findAddress.getSingleResult();
+    }
+
+    public Phone getPhoneWithId(int id) {
+        TypedQuery<Phone> findPhone = em.
+                createNamedQuery("Phone.findById", Phone.class)
+                .setParameter("param1", id);
+        return findPhone.getSingleResult();
+    }
+
+    @Transactional
+    public Address persistAddress(Address address){
+        if( address !=null){
+            em.persist(address);
+            return getAddressWithId(address.getId());
+        }
+        return null;
+    }
+
 
     @Transactional
     public BloodBank persistBloodBank(BloodBank newBank) {
@@ -261,6 +280,7 @@ public class BloodBankService implements Serializable {
     public BloodBank updateBloodBank(int bbID, BloodBank newBloodBank) {
         BloodBank banktobeupdated = getWithId(BloodBank.class, BloodBank_.id, bbID);
         em.refresh(banktobeupdated);
+        newBloodBank.setId(bbID);
         em.merge(newBloodBank);
         em.flush();
         return getWithId(BloodBank.class, BloodBank_.id, bbID);
@@ -270,6 +290,7 @@ public class BloodBankService implements Serializable {
     public BloodDonation updateBloodDonation(int id, BloodDonation newBloodDonation) {
         BloodDonation donation = getWithId(BloodDonation.class, BloodDonation_.id, id);
         em.refresh(donation);
+        newBloodDonation.setId(donation.getId());
         em.merge(newBloodDonation);
         em.flush();
         return getWithId(BloodDonation.class, BloodDonation_.id, id);
@@ -279,9 +300,20 @@ public class BloodBankService implements Serializable {
     public Address updateAddress(int id, Address address) {
         Address address1 = getAddressWithId(id);
         em.refresh(address1);
+        address.setId(address1.getId());
         em.merge(address);
         em.flush();
         return getAddressWithId(id);
+    }
+
+    @Transactional
+    public Phone updatePhone(int id, Phone phone) {
+        Phone phone1 = getPhoneWithId(id);
+        em.refresh(phone1);
+        phone.setId(phone1.getId());
+        em.merge(phone);
+        em.flush();
+        return getPhoneWithId(id);
     }
 
     @Transactional
