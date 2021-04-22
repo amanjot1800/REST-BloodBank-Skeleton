@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 
 /**
@@ -23,11 +24,15 @@ import org.hibernate.Hibernate;
 
 @Entity
 @Table( name = "address")
-@NamedQuery( name = "Address.findAll", query = "SELECT a FROM Address a")
-@NamedQuery( name = "Address.findwithid", query = "SELECT a FROM Address a where a.id = :param1")
+@NamedQuery( name = "Address.findAll", query = "SELECT a FROM Address a left join fetch a.contacts")
+@NamedQuery( name = "Address.findWithId", query = "SELECT a FROM Address a left join fetch a.contacts where a.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "address_id"))
 public class Address extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public static final String FIND_ALL_ADDRESS_QUERY = "Address.findAll";
+	public static final String FIND_ADDRESS_ID_QUERY = "Address.findWithId";
+
 
 	@Basic( optional = false)
 	@Column( name = "street_number", nullable = false, length = 10)
@@ -53,6 +58,7 @@ public class Address extends PojoBase implements Serializable {
 	@Column( nullable = false, length = 100)
 	private String zipcode;
 
+	@JsonIgnore
 	// Hint - @OneToMany is used to define 1:M relationship between this entity and another.
 	// Hint - @OneToMany option cascade can be added to define if changes to this entity should cascade to objects.
 	// Hint - @OneToMany option cascade will be ignored if not added, meaning no cascade effect.
@@ -117,6 +123,7 @@ public class Address extends PojoBase implements Serializable {
 		this.zipcode = zipcode;
 	}
 
+	@JsonIgnore
 	public Set< Contact> getContacts() {
 		return contacts;
 	}

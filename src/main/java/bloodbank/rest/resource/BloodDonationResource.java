@@ -39,7 +39,7 @@ public class BloodDonationResource {
 
     @GET
     @RolesAllowed( { ADMIN_ROLE })
-    @Path( RESOURCE_PATH_ID_PATH)
+    @Path( "/{id}")
     public Response getDonationById( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug( "try to retrieve specific Blood Donation " + id);
         BloodDonation donation = service.getDonationWithId(id);
@@ -55,39 +55,26 @@ public class BloodDonationResource {
 
     }
 
-    @RolesAllowed( { ADMIN_ROLE })
-    @POST
-    @Path("/{id}/blooddonation")
-    public Response addBloodDonationToBloodBank( @PathParam("id") int bbID, BloodDonation newBloodDonation) {
-        LOG.debug( "add a new BloodDonation to bloodbank={} ...", bbID);
 
-        BloodBank bb = service.getWithId(BloodBank.class, BloodBank_.id, bbID);
-        newBloodDonation.setBank(bb);
-        bb.getDonations().add(newBloodDonation);
-        bb = service.updateBloodBank(bbID, bb);
-        return Response.ok( bb).build();
-    }
-
-    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
+/*    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
     @PUT
     @Path( "/{id}")
-    public Response updateBloodBank( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, BloodBank updatingBloodBank) {
-        LOG.debug( "update a specific BloodBank ...");
+    public Response updateBloodDonation( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, BloodDonation updatingBloodDonation) {
+        LOG.debug( "update a specific BloodDonation ...");
         Response response = null;
-        BloodBank updatedBloodBank = service.updateBloodBank( id, updatingBloodBank);
-        return Response.ok( updatedBloodBank).build();
-    }
-
+        BloodDonation updatedBloodBank = service.updateBloodDonation(id, updatingBloodDonation);
+        return Response.ok(updatedBloodBank).build();
+    }*/
 
 
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path("/{id}")
-    public Response deleteBank(@PathParam("id") int id){
+    public Response deleteBloodDonation(@PathParam("id") int id){
         Response response = null;
-        BloodBank bank = service.getWithId(BloodBank.class, Person_.id, id);
-        service.deleteBankById(id);
-        return Response.ok(bank).build();
+        BloodDonation donation = service.getDonationWithId(id);
+        service.deleteBloodDonationById(id);
+        return Response.ok(donation).build();
     }
 
 }

@@ -13,6 +13,8 @@ package bloodbank.ejb;
 
 import static bloodbank.entity.BloodDonation.FIND_ALL_BLOODDONATION_QUERY;
 import static bloodbank.entity.BloodDonation.FIND_ONE_BLOODDONATION_QUERY;
+import static bloodbank.entity.Address.FIND_ALL_ADDRESS_QUERY;
+import static bloodbank.entity.Address.FIND_ADDRESS_ID_QUERY;
 import static bloodbank.entity.BloodBank.ALL_BLOODBANKS_QUERY_NAME;
 import static bloodbank.entity.Person.ALL_PERSONS_QUERY_NAME;
 import static bloodbank.entity.SecurityRole.ROLE_BY_NAME_QUERY;
@@ -37,6 +39,7 @@ import java.util.*;
 import javax.ejb.Singleton;
 import javax.faces.view.facelets.Facelet;
 import javax.inject.Inject;
+import javax.mail.internet.AddressException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -78,10 +81,18 @@ public class BloodBankService implements Serializable {
         return tq.getResultList();
     }
 
+
+
     public List<BloodDonation> getallBlooddonations() {
         TypedQuery<BloodDonation> findAll = em.createNamedQuery(FIND_ALL_BLOODDONATION_QUERY, BloodDonation.class);
         return findAll.getResultList();
     }
+
+    public List<Address> getAllAddresses() {
+        TypedQuery<Address> findAll = em.createNamedQuery(FIND_ALL_ADDRESS_QUERY, Address.class);
+        return findAll.getResultList();
+    }
+
 
     public BloodDonation getDonationWithId(int id) {
         TypedQuery<BloodDonation> findAll = em.
@@ -96,15 +107,16 @@ public class BloodBankService implements Serializable {
 
     public Address getAddressWithId(int id) {
         TypedQuery<Address> findAddress = em.
-                createNamedQuery("Address.findwithid", Address.class)
+                createNamedQuery(FIND_ADDRESS_ID_QUERY, Address.class)
                 .setParameter("param1", id);
         return findAddress.getSingleResult();
     }
 
+    @Transactional
     public Address persistAddress(Address address){
         if( address !=null){
             em.persist(address);
-            return getWithId(Address.class, Address_.id, address.getId());
+            return getAddressWithId(address.getId());
         }
         return null;
     }
@@ -211,8 +223,8 @@ public class BloodBankService implements Serializable {
             TypedQuery<SecurityUser> findUser = em
                 .createNamedQuery(USER_FOR_OWNING_PERSON_QUERY, SecurityUser.class)
                 .setParameter(PARAM1, person.getId());
-            SecurityUser sUser = findUser.getSingleResult();
-            em.remove(sUser);
+            /*SecurityUser sUser = findUser.getSingleResult();
+            em.remove(sUser);*/
             em.remove(person);
         }
     }
@@ -225,6 +237,16 @@ public class BloodBankService implements Serializable {
             em.remove(bank);
         }
     }
+
+    @Transactional
+    public void deleteBloodDonationById(int id) {
+        BloodDonation donation = getWithId(BloodDonation.class, BloodDonation_.id, id);
+        if (donation != null) {
+            em.refresh(donation);
+            em.remove(donation);
+        }
+    }
+
 
     @Transactional
     public void deleteAddress(int id){
@@ -244,6 +266,25 @@ public class BloodBankService implements Serializable {
         return getWithId(BloodBank.class, BloodBank_.id, bbID);
     }
 
+    @Transactional
+    public BloodDonation updateBloodDonation(int id, BloodDonation newBloodDonation) {
+        BloodDonation donation = getWithId(BloodDonation.class, BloodDonation_.id, id);
+        em.refresh(donation);
+        em.merge(newBloodDonation);
+        em.flush();
+        return getWithId(BloodDonation.class, BloodDonation_.id, id);
+    }
+
+    @Transactional
+    public Address updateAddress(int id, Address address) {
+        Address address1 = getAddressWithId(id);
+        em.refresh(address1);
+        em.merge(address);
+        em.flush();
+        return getAddressWithId(id);
+    }
+
+    @Transactional
     public BloodDonation persistBloodDonation(BloodDonation bloodDonation) {
         if (bloodDonation != null){
             em.persist(bloodDonation);
@@ -252,6 +293,7 @@ public class BloodBankService implements Serializable {
         return null;
     }
 
+    @Transactional
     public DonationRecord persistDonationRecord(DonationRecord donationRecord){
         if (donationRecord != null){
             em.persist(donationRecord);
@@ -260,6 +302,7 @@ public class BloodBankService implements Serializable {
         return null;
     }
 
+    @Transactional
     public void deleteDonationRecordById(int id){
         DonationRecord donationRecord = getWithId(DonationRecord.class, DonationRecord_.id, id);
         if (donationRecord != null) {
@@ -268,6 +311,7 @@ public class BloodBankService implements Serializable {
         }
     }
 
+    @Transactional
     public Phone persistPhone(Phone phone){
         if (phone!=null){
             em.persist(phone);
@@ -276,6 +320,7 @@ public class BloodBankService implements Serializable {
         return null;
     }
 
+    @Transactional
     public void deletePhoneById(int id){
         Phone phone = getWithId(Phone.class, Phone_.id, id);
         if (phone != null) {
@@ -283,6 +328,4 @@ public class BloodBankService implements Serializable {
             em.remove(phone);
         }
     }
-
-
 }

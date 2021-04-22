@@ -3,6 +3,7 @@ package bloodbank.rest.resource;
 import bloodbank.ejb.BloodBankService;
 import bloodbank.entity.Address;
 
+import bloodbank.entity.BloodBank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,9 +35,8 @@ public class AddressResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response getAllAddress() {
         LOG.debug( "retrieving all addresses ...");
-        List<Address> Addresses = service.getAll(Address.class);
-        Response response = Response.ok( Addresses).build();
-        return response;
+        List<Address> Addresses = service.getAllAddresses();
+        return Response.ok( Addresses).build();
     }
 
     @GET
@@ -52,12 +52,20 @@ public class AddressResource {
     @RolesAllowed( { ADMIN_ROLE })
     public Response addAddress( Address address) {
         Response response = null;
-
         Address newAddress = service.persistAddress(address);
         response = Response.ok( newAddress).build();
         return response;
     }
 
+    @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
+    @PUT
+    @Path( "/{id}")
+    public Response updateAddress( @PathParam( RESOURCE_PATH_ID_ELEMENT) int id, Address updatingAddress) {
+        LOG.debug( "update a specific BloodBank ...");
+        Response response = null;
+        Address updatedAddress = service.updateAddress(id, updatingAddress);
+        return Response.ok(updatedAddress).build();
+    }
 
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
