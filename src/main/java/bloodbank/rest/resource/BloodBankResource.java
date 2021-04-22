@@ -60,7 +60,7 @@ public class BloodBankResource {
         }
     }
 
-    @RolesAllowed( { ADMIN_ROLE })
+/*    @RolesAllowed( { ADMIN_ROLE })
     @POST
     @Path("/{id}/blooddonation")
     public Response addBloodDonationToBloodBank( @PathParam("id") int bbID, BloodDonation newBloodDonation) {
@@ -71,7 +71,7 @@ public class BloodBankResource {
         bb.getDonations().add(newBloodDonation);
         bb = service.updateBloodBank(bbID, bb);
         return Response.ok( bb).build();
-    }
+    }*/
 
     @RolesAllowed( { ADMIN_ROLE, USER_ROLE })
     @PUT
@@ -84,13 +84,12 @@ public class BloodBankResource {
     }
 
 
-
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path("/{id}")
     public Response deleteBank(@PathParam("id") int id){
         Response response = null;
-        BloodBank bank = service.getWithId(BloodBank.class, Person_.id, id);
+        BloodBank bank = service.getWithId(BloodBank.class, BloodBank_.id, id);
         service.deleteBankById(id);
         return Response.ok(bank).build();
     }

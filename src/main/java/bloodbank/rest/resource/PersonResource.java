@@ -48,7 +48,7 @@ public class PersonResource {
 	protected SecurityContext sc;
 
 	@GET
-    @RolesAllowed({ADMIN_ROLE})
+	@RolesAllowed({ADMIN_ROLE})
 	public Response getPersons() {
 		LOG.debug( "retrieving all persons ...");
 		List< Person> persons = service.getAll(Person.class);

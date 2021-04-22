@@ -15,35 +15,26 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 
 /**
  * The persistent class for the address database table.
  */
-//Hint - @Entity marks this class as an entity which needs to be mapped by JPA.
-//Hint - @Entity does not need a name if the name of the class is sufficient.
-//Hint - @Entity name does not matter as long as it is consistent across the code.
+
 @Entity
-//Hint - @Table defines a specific table on DB which is mapped to this entity.
 @Table( name = "address")
-//Hint - @NamedQuery attached to this class which uses JPQL/HQL. SQL cannot be used with NamedQuery.
-//Hint - @NamedQuery uses the name which is defined in @Entity for JPQL, if no name is defined use class name.
-//Hint - @NamedNativeQuery can optionally be used if there is a need for SQL query.
-@NamedQuery( name = "Address.findAll", query = "SELECT a FROM Address a")
-//Hint - @AttributeOverride can overrides column details. This Entity uses address_id as its primary key name, it needs to override the name in the mapped super class.
+@NamedQuery( name = "Address.findAll", query = "SELECT a FROM Address a left join fetch a.contacts")
+@NamedQuery( name = "Address.findWithId", query = "SELECT a FROM Address a left join fetch a.contacts where a.id = :param1")
 @AttributeOverride( name = "id", column = @Column( name = "address_id"))
-//Hint - PojoBase is inherited by any entity with integer as their primary key.
-//Hint - PojoBaseCompositeKey is inherited by any entity with a composite key as their primary key.
 public class Address extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	// Hint - @Basic( optional = false) is used when the object cannot be null.
-	// Hint - @Basic or none can be used if the object can be null.
-	// Hint - @Basic is for checking the state of object at the scope of our code.
+	public static final String FIND_ALL_ADDRESS_QUERY = "Address.findAll";
+	public static final String FIND_ADDRESS_ID_QUERY = "Address.findWithId";
+
+
 	@Basic( optional = false)
-	// Hint - @Column is used to define the details of the column which this object will map to.
-	// Hint - @Column is for mapping and creation (if needed) of an Object to DB.
-	// Hint - @Column can also be used to define a specific name for the column if it is different than our object name.
 	@Column( name = "street_number", nullable = false, length = 10)
 	private String streetNumber;
 
@@ -67,6 +58,7 @@ public class Address extends PojoBase implements Serializable {
 	@Column( nullable = false, length = 100)
 	private String zipcode;
 
+	@JsonIgnore
 	// Hint - @OneToMany is used to define 1:M relationship between this entity and another.
 	// Hint - @OneToMany option cascade can be added to define if changes to this entity should cascade to objects.
 	// Hint - @OneToMany option cascade will be ignored if not added, meaning no cascade effect.
@@ -131,6 +123,7 @@ public class Address extends PojoBase implements Serializable {
 		this.zipcode = zipcode;
 	}
 
+	@JsonIgnore
 	public Set< Contact> getContacts() {
 		return contacts;
 	}
